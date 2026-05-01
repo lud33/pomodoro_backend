@@ -1,6 +1,5 @@
 const PomodoroSession = require('../models/PomodoroSession');
 const User = require('../models/User');
-const Task = require('../models/Task');
 
 exports.getTodayStats = async (req, res) => {
   try {
@@ -16,15 +15,15 @@ exports.getTodayStats = async (req, res) => {
     });
     
     const totalFocusTime = sessions.reduce((sum, s) => sum + s.durationMinutes, 0);
-    const sessionsCount = sessions.length;
     
     res.json({
       totalFocusTime,
-      sessionsCount,
+      sessionsCount: sessions.length,
       date: today
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
@@ -66,7 +65,8 @@ exports.getWeekStats = async (req, res) => {
     
     res.json(weeklyData);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
@@ -74,11 +74,12 @@ exports.getStreakInfo = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     res.json({
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
+      currentStreak: user.currentStreak || 0,
+      bestStreak: user.bestStreak || 0,
       lastActiveDate: user.lastActiveDate
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
