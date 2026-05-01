@@ -8,6 +8,7 @@ const generateToken = (userId) => {
   });
 };
 
+// Make sure all these are properly defined and exported
 exports.register = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -73,6 +74,26 @@ exports.login = async (req, res) => {
         bestStreak: user.bestStreak,
         settings: user.settings
       }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      currentStreak: user.currentStreak,
+      bestStreak: user.bestStreak,
+      settings: user.settings
     });
   } catch (error) {
     console.error(error);
