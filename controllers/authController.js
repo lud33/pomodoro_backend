@@ -79,19 +79,3 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-exports.getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.userId);
-    res.json({
-      id: user._id,
-      email: user.email,
-      name: user.name,
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
-      settings: user.settings
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
